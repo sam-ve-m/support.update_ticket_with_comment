@@ -2,27 +2,36 @@ from logging import getLogger
 from flask import Response, request
 from json import dumps
 from heimdall_client.bifrost import Heimdall
-from src.validator import Ticket
+from src.validator import CommentValidator
 from src.service import UpdateTicketWithComment
+import asyncio
+
 log = getLogger()
+event_loop = asyncio.get_event_loop()
 
 
-def update_new_ticket_comments_in_zendesk():
+def fn():
     url_path = request.full_path
-    x_thebes_answer = request.headers.get('x-thebes-answer')
+    x_thebes_answer = request.headers.get("x-thebes-answer")
     heimdall_client = Heimdall(logger=log)
     raw_ticket_params = request.json
     try:
         http_status = 403
         inserted = False
-        if heimdall_client.validate_jwt(jwt=x_thebes_answer):
-            jwt_content, heimdall_status = heimdall_client.decode_payload(jwt=x_thebes_answer)
-            ticket_params = Ticket(**raw_ticket_params)
-            update_comments_service = UpdateTicketWithComment(params=ticket_params, url_path=url_path, x_thebes_answer=jwt_content['decoded_jwt'])
-            update_comments_service.requester_is_the_same_ticket_user()
-            update_comments_service.update_comments_in_zendesk_ticket()
+        is_a_valid_jwt = event_loop.run_until_complete(heimdall_client.validate_jwt(jwt=x_thebes_answer))
+        if is_a_valid_jwt:
+            jwt_content, heimdall_status = event_loop.run_until_complete(heimdall_client.decode_payload(
+                jwt=x_thebes_answer
+            ))
+            comment_params = CommentValidator(**raw_ticket_params)
+            update_comments_service = UpdateTicketWithComment(
+                params=comment_params,
+                url_path=url_path,
+                x_thebes_answer=jwt_content["decoded_jwt"],
+            )
+            update_comments_service()
             http_status = 200
-    return Response(
+        return Response(
             dumps({"status": inserted}),
             mimetype="application/json",
             status=http_status,

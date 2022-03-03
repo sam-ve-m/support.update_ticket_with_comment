@@ -1,0 +1,55 @@
+include:
+- ./func/*
+kind: ArchiveUploadSpec
+name: func-S8QY
+
+---
+apiVersion: fission.io/v1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: update-comment-fn-bb960162-3dd0-41c8-ac7f-369703635e0b
+  namespace: default
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: update-comment-ticket-env
+    namespace: default
+  source:
+    checksum: {}
+    type: url
+    url: archive://func-S8QY
+status:
+  buildstatus: pending
+  lastUpdateTimestamp: "2022-03-03T16:57:02Z"
+
+---
+apiVersion: fission.io/v1
+kind: Function
+metadata:
+  creationTimestamp: null
+  name: update-comment-fn
+  namespace: default
+spec:
+  InvokeStrategy:
+    ExecutionStrategy:
+      ExecutorType: poolmgr
+      MaxScale: 0
+      MinScale: 0
+      SpecializationTimeout: 120
+      TargetCPUPercent: 0
+    StrategyType: execution
+  concurrency: 500
+  environment:
+    name: update-comment-ticket-env
+    namespace: default
+  functionTimeout: 60
+  idletimeout: 120
+  package:
+    functionName: main.fn
+    packageref:
+      name: update-comment-fn-bb960162-3dd0-41c8-ac7f-369703635e0b
+      namespace: default
+  requestsPerPod: 1
+  resources: {}

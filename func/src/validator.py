@@ -1,6 +1,6 @@
+from distutils.command.config import config
 from pydantic import BaseModel
 from typing import List
-from .enums import TicketType
 
 
 class Base64Attachments(BaseModel):
@@ -8,8 +8,8 @@ class Base64Attachments(BaseModel):
     content: str
 
 
-class Ticket(BaseModel):
-    subject: str
-    description: str
-    ticket_type: TicketType
+class CommentValidator(BaseModel):
+    body: str
     attachments: List[Base64Attachments] = []
+    id: int
+
