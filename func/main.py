@@ -1,19 +1,21 @@
-from logging import getLogger
 from flask import Response, request
 from json import dumps
+from logging import getLogger
+import asyncio
+
 from heimdall_client.bifrost import Heimdall
 from src.validator import CommentValidator
 from src.service import UpdateTicketWithComment
-import asyncio
+
 
 log = getLogger()
 event_loop = asyncio.get_event_loop()
 
 
-def fn():
+def update_ticket_comments():
     url_path = request.full_path
     x_thebes_answer = request.headers.get("x-thebes-answer")
-    heimdall_client = Heimdall(logger=log)
+    heimdall_client = Heimdall()
     raw_ticket_params = request.json
     try:
         http_status = 403

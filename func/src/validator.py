@@ -1,4 +1,3 @@
-from distutils.command.config import config
 from pydantic import BaseModel
 from typing import List
 

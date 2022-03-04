@@ -2,7 +2,7 @@ apiVersion: fission.io/v1
 kind: HTTPTrigger
 metadata:
   creationTimestamp: null
-  name: bb383b76-0762-4440-9d58-a08ad8e111cf
+  name: 665bd6df-4fa8-4fd7-aaee-3dc7fa5b49a7
   namespace: default
 spec:
   createingress: false
@@ -14,10 +14,10 @@ spec:
   ingressconfig:
     annotations: null
     host: '*'
-    path: /update_comment
+    path: /update_comments
     tls: ""
   method: ""
   methods:
   - PUT
   prefix: ""
-  relativeurl: /update_comment
+  relativeurl: /update_comments
