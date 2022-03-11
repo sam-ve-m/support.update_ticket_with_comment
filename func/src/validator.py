@@ -11,4 +11,3 @@ class CommentValidator(BaseModel):
     body: str
     attachments: List[Base64Attachments] = []
     id: int
-

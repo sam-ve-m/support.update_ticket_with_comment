@@ -31,8 +31,7 @@ class UpdateTicketWithComment:
         if user_result:
             user_zenpy = user_result.values[0]
             return user_zenpy
-        else:
-            raise Exception("Invalid user")
+        raise Exception("Invalid user")
 
     def requester_is_the_same_ticket_user(self) -> bool:
         user_zenpy = self.get_user()

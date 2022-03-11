@@ -1,14 +1,13 @@
 from flask import Response, request
 from json import dumps
-from logging import getLogger
 import asyncio
 
+from etria_logger import Gladsheim
 from heimdall_client.bifrost import Heimdall
 from src.validator import CommentValidator
 from src.service import UpdateTicketWithComment
 
 
-log = getLogger()
 event_loop = asyncio.get_event_loop()
 
 
@@ -16,15 +15,17 @@ def update_ticket_comments():
     url_path = request.full_path
     x_thebes_answer = request.headers.get("x-thebes-answer")
     heimdall_client = Heimdall()
-    raw_ticket_params = request.json
+    raw_ticket_params = request.get_json()
     try:
         http_status = 403
         inserted = False
-        is_a_valid_jwt = event_loop.run_until_complete(heimdall_client.validate_jwt(jwt=x_thebes_answer))
+        is_a_valid_jwt = event_loop.run_until_complete(
+            heimdall_client.validate_jwt(jwt=x_thebes_answer)
+        )
         if is_a_valid_jwt:
-            jwt_content, heimdall_status = event_loop.run_until_complete(heimdall_client.decode_payload(
-                jwt=x_thebes_answer
-            ))
+            jwt_content, heimdall_status = event_loop.run_until_complete(
+                heimdall_client.decode_payload(jwt=x_thebes_answer)
+            )
             comment_params = CommentValidator(**raw_ticket_params)
             update_comments_service = UpdateTicketWithComment(
                 params=comment_params,
@@ -33,15 +34,17 @@ def update_ticket_comments():
             )
             update_comments_service()
             http_status = 200
+            inserted = True
         return Response(
             dumps({"status": inserted}),
             mimetype="application/json",
             status=http_status,
         )
-    except Exception as e:
-        log.error(str(e), exc_info=e)
+    except Exception as error:
+        message = {"message": "Fission: update_ticket_comments"}
+        Gladsheim.error(error, message)
         return Response(
-            dumps({"error": {"message": str(e)}, "status": False}),
+            dumps({"error": {"message": error}, "status": False}),
             mimetype="application/json",
             status=400,
         )
