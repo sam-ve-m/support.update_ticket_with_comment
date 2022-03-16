@@ -8,13 +8,16 @@ from zenpy.lib.api_objects import User, Ticket, Comment, Attachment
 
 
 class UpdateTicketWithComment:
-    zenpy_client = Zenpy(
-        **{
-            "email": config("ZENDESK_EMAIL"),
-            "password": config("ZENDESK_PASSWORD"),
-            "subdomain": config("ZENDESK_SUBDOMAIN"),
-        }
-    )
+    zenpy_client = None
+
+    def _get_zenpy_client(cls):
+        if cls.zenpy_client is None:
+            cls.zenpy_client = Zenpy(**{
+                'email': config('ZENDESK_EMAIL'),
+                'password': config('ZENDESK_PASSWORD'),
+                'subdomain': config('ZENDESK_SUBDOMAIN')
+            })
+        return cls.zenpy_client
 
     def __init__(self, params: Comment, url_path: str, x_thebes_answer: dict):
         self.x_thebes_answer = x_thebes_answer
@@ -27,7 +30,8 @@ class UpdateTicketWithComment:
 
     def get_user(self) -> User:
         unique_id = self.x_thebes_answer["user"]["unique_id"]
-        user_result = self.zenpy_client.users(external_id=unique_id)
+        zenpy_client = self._get_zenpy_client()
+        user_result = zenpy_client.users(external_id=unique_id)
         if user_result:
             user_zenpy = user_result.values[0]
             return user_zenpy
