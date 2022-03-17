@@ -6,6 +6,8 @@ from typing import List
 from zenpy import Zenpy
 from zenpy.lib.api_objects import User, Ticket, Comment, Attachment
 
+from func.src.validator import CommentValidator
+
 
 class UpdateTicketWithComment:
     zenpy_client = None
@@ -19,7 +21,7 @@ class UpdateTicketWithComment:
             })
         return cls.zenpy_client
 
-    def __init__(self, params: Comment, url_path: str, x_thebes_answer: dict):
+    def __init__(self, params: CommentValidator, url_path: str, x_thebes_answer: dict):
         self.x_thebes_answer = x_thebes_answer
         self.url_path = url_path
         self.params = params.dict()
