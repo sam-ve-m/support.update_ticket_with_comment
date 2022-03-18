@@ -12,6 +12,7 @@ from func.src.validator import CommentValidator
 class UpdateTicketWithComment:
     zenpy_client = None
 
+    @classmethod
     def _get_zenpy_client(cls):
         if cls.zenpy_client is None:
             cls.zenpy_client = Zenpy(
@@ -42,7 +43,7 @@ class UpdateTicketWithComment:
         if user_result:
             user_zenpy = user_result.values[0]
             return user_zenpy
-        raise Exception('Invalid user')
+        raise Exception('Bad request')
 
     def requester_is_the_same_ticket_user(self) -> bool:
         user_zenpy = self.get_user()
@@ -62,7 +63,8 @@ class UpdateTicketWithComment:
             public=True,
         )
         ticket_zenpy.comment = new_comment
-        self.zenpy_client.tickets.update(ticket_zenpy)
+        zenpy_client = self._get_zenpy_client()
+        zenpy_client.tickets.update(ticket_zenpy)
 
     def get_attachments(self) -> List[Attachment]:
         attachment_tokens = list()
