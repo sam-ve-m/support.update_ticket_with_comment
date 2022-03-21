@@ -24,12 +24,24 @@ class UpdateTicketWithComment:
             )
         return cls.zenpy_client
 
-    def __init__(
-        self, params: CommentValidator, url_path: str, x_thebes_answer: dict
-    ):
+    def __init__(self, params: CommentValidator, url_path: str, x_thebes_answer: dict):
         self.x_thebes_answer = x_thebes_answer
         self.url_path = url_path
-        self.params = params
+        self.params = params.dict()
+
+    def get_attachments(self) -> List[Attachment]:
+        attachment_tokens = list()
+        for attachment in self.params['attachments']:
+            file_bytes = b64decode(attachment['content'])
+            with TemporaryFile() as temp_file:
+                temp_file.write(file_bytes)
+                temp_file.seek(SEEK_SET)
+                zenpy_client = self._get_zenpy_client()
+                upload_instance = zenpy_client.attachments.upload(
+                    fp=temp_file, target_name=attachment['name']
+                )
+                attachment_tokens.append(upload_instance.token)
+        return attachment_tokens
 
     def get_ticket(self) -> Ticket:
         zenpy_client = self._get_zenpy_client()
@@ -65,20 +77,6 @@ class UpdateTicketWithComment:
         ticket_zenpy.comment = new_comment
         zenpy_client = self._get_zenpy_client()
         zenpy_client.tickets.update(ticket_zenpy)
-
-    def get_attachments(self) -> List[Attachment]:
-        attachment_tokens = list()
-        for attachment in self.params['attachments']:
-            file_bytes = b64decode(attachment['content'])
-            with TemporaryFile() as temp_file:
-                temp_file.write(file_bytes)
-                temp_file.seek(SEEK_SET)
-                zenpy_client = self._get_zenpy_client()
-                upload_instance = zenpy_client.attachments.upload(
-                    fp=temp_file, target_name=attachment['name']
-                )
-                attachment_tokens.append(upload_instance.token)
-        return attachment_tokens
 
     def __call__(self, *args, **kwargs):
         self.requester_is_the_same_ticket_user()

@@ -7,7 +7,6 @@ from heimdall_client.bifrost import Heimdall
 from src.validator import CommentValidator
 from src.service import UpdateTicketWithComment
 
-
 event_loop = asyncio.get_event_loop()
 
 
@@ -41,7 +40,7 @@ def update_ticket_comments():
             status=http_status,
         )
     except Exception as error:
-        message = {"message": "Fission: update_ticket_comments"}
+        message = "Fission: update_ticket_comments"
         Gladsheim.error(error, message)
         return Response(
             dumps({"error": {"message": error}, "status": False}),
