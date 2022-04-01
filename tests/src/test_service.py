@@ -3,7 +3,7 @@ from zenpy.lib.api_objects import Comment
 import pytest
 
 from func.src.service import UpdateTicketWithComment
-from .conftest import StubTicket, StubUser, StubGetUsers, StubAttachmentUploadInstance
+from .stubs import StubTicket, StubUser, StubGetUsers, StubAttachmentUploadInstance
 
 
 @patch.object(UpdateTicketWithComment, "_get_zenpy_client")
