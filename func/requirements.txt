@@ -1,0 +1,6 @@
+--extra-index-url https://backend:<FILL_PASSWORD_HERE>@nexus.sigame.com.br/repository/pypi/simple
+boto3==1.21.21
+flask==2.1.1
+heimdall-client==2.2.0
+pydantic==1.9.0
+zenpy==2.0.24
