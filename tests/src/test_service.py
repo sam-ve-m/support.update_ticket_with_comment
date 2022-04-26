@@ -1,9 +1,14 @@
-from unittest.mock import patch
-from zenpy.lib.api_objects import Comment
-import pytest
-
+# Jormungandr
+from func.src.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
 from func.src.service import UpdateTicketWithComment
 from .stubs import StubTicket, StubUser, StubGetUsers, StubAttachmentUploadInstance
+
+# Standards
+from unittest.mock import patch
+
+# Third party
+from zenpy.lib.api_objects import Comment
+import pytest
 
 
 @patch.object(UpdateTicketWithComment, "_get_zenpy_client")
@@ -34,7 +39,7 @@ def test_get_user_if_zenpy_client_users_is_called(mock_zenpy_client, client_upda
 def test_get_user_raises(mock_zenpy_client, client_update_comment_service):
     client_update_comment_service.x_thebes_answer["user"].update(unique_id=000000)
     mock_zenpy_client().users.return_value = None
-    with pytest.raises(Exception, match="Bad request"):
+    with pytest.raises(InvalidUniqueId):
         client_update_comment_service.get_user()
 
 
@@ -59,6 +64,13 @@ def test_get_ticket_if_zenpy_client_tickets_is_called(mock_zenpy_client, client_
     client_update_comment_service.get_ticket()
 
     mock_zenpy_client().tickets.assert_called_once_with(id=255)
+
+
+@patch.object(UpdateTicketWithComment, "_get_zenpy_client")
+def test_get_ticket_raises(mock_zenpy_client, client_update_comment_service):
+    mock_zenpy_client().tickets.side_effect = TicketNotFound
+    with pytest.raises(TicketNotFound):
+        client_update_comment_service.get_ticket()
 
 
 @patch.object(UpdateTicketWithComment, "get_ticket", return_value=StubTicket(requester=99))
@@ -89,7 +101,7 @@ def test_requester_is_the_same_ticket_user_if_get_ticket_is_called(mock_get_user
 @patch.object(UpdateTicketWithComment, "get_ticket", return_value=StubTicket(requester="user123"))
 @patch.object(UpdateTicketWithComment, "get_user", return_value="user456")
 def test_requester_is_the_same_ticket_user_raises(mock_get_user, mock_get_ticket, client_update_comment_service):
-    with pytest.raises(Exception, match="Bad request"):
+    with pytest.raises(InvalidTicketRequester):
         client_update_comment_service.requester_is_the_same_ticket_user()
 
 
