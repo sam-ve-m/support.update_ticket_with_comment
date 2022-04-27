@@ -1,7 +1,7 @@
 # Jormungandr
-from func.src.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
-from func.src.service import UpdateTicketWithComment
-from .stubs import StubTicket, StubUser, StubGetUsers, StubAttachmentUploadInstance
+from func.src.domain.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
+from func.src.services.update_ticket import UpdateTicketWithComment
+from tests.src.stubs import StubTicket, StubUser, StubGetUsers, StubAttachmentUploadInstance
 
 # Standards
 from unittest.mock import patch
@@ -18,7 +18,7 @@ def test_get_user(mock_zenpy_client, client_update_comment_service):
     user = client_update_comment_service.get_user()
 
     assert isinstance(user, StubUser)
-    assert user.external_id == client_update_comment_service.x_thebes_answer["user"]["unique_id"]
+    assert user.external_id == client_update_comment_service.decoded_jwt["user"]["unique_id"]
 
 
 @patch.object(UpdateTicketWithComment, "_get_zenpy_client")
@@ -37,7 +37,7 @@ def test_get_user_if_zenpy_client_users_is_called(mock_zenpy_client, client_upda
 
 @patch.object(UpdateTicketWithComment, "_get_zenpy_client")
 def test_get_user_raises(mock_zenpy_client, client_update_comment_service):
-    client_update_comment_service.x_thebes_answer["user"].update(unique_id=000000)
+    client_update_comment_service.decoded_jwt["user"].update(unique_id=000000)
     mock_zenpy_client().users.return_value = None
     with pytest.raises(InvalidUniqueId):
         client_update_comment_service.get_user()

@@ -1,6 +1,6 @@
 # Jormungandr
-from .validator import CommentValidator
-from .exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
+from func.src.domain.validator import CommentValidator
+from func.src.domain.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
 
 # Standards
 from base64 import b64decode
@@ -37,8 +37,8 @@ class UpdateTicketWithComment:
                 raise ex
         return cls.zenpy_client
 
-    def __init__(self, params: CommentValidator, url_path: str, x_thebes_answer: dict):
-        self.x_thebes_answer = x_thebes_answer
+    def __init__(self, params: CommentValidator, url_path: str, decoded_jwt: dict):
+        self.decoded_jwt = decoded_jwt
         self.url_path = url_path
         self.params = params.dict()
 
@@ -67,7 +67,7 @@ class UpdateTicketWithComment:
             raise TicketNotFound
 
     def get_user(self) -> User:
-        unique_id = self.x_thebes_answer["user"]["unique_id"]
+        unique_id = self.decoded_jwt["user"]["unique_id"]
         zenpy_client = self._get_zenpy_client()
         user_result = zenpy_client.users(external_id=unique_id)
         if user_result:
@@ -75,7 +75,7 @@ class UpdateTicketWithComment:
             return user_zenpy
         message = (
             f"get_user::There is no user with this unique id specified"
-            f"::{self.x_thebes_answer['user']['unique_id']}"
+            f"::{self.decoded_jwt['user']['unique_id']}"
         )
         Gladsheim.error(message=message)
         raise InvalidUniqueId
