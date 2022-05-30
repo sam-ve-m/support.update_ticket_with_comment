@@ -1,8 +1,10 @@
-from pytest import fixture
+# Jormungandr
+from func.src.services.update_ticket import UpdateTicketWithComment
+from func.src.domain.validator import CommentValidator
+from tests.src.img import attachment1
 
-from func.src.service import UpdateTicketWithComment
-from func.src.validator import CommentValidator
-from.img import attachment1
+# Third party
+from pytest import fixture
 
 jwt_test = {"user": {"unique_id": 102030}}
 params_test = {"id": 255, "body": "corpo do comentário", "attachments": []}
@@ -11,7 +13,7 @@ params_test = {"id": 255, "body": "corpo do comentário", "attachments": []}
 @fixture(scope="function")
 def client_update_comment_service():
     client_update_comment_service = UpdateTicketWithComment(
-        x_thebes_answer=jwt_test,
+        decoded_jwt=jwt_test,
         params=CommentValidator(**params_test),
         url_path="",
     )
@@ -21,7 +23,7 @@ def client_update_comment_service():
 @fixture(scope="function")
 def client_update_comment_service_with_attach():
     client_update_comment_service = UpdateTicketWithComment(
-        x_thebes_answer=jwt_test,
+        decoded_jwt=jwt_test,
         params=CommentValidator(**params_test),
         url_path="",
     )
