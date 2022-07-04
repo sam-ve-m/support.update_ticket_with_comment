@@ -1,5 +1,5 @@
 # Jormungandr
-from func.src.domain.enum import CodeResponse
+from ...domain.enum import CodeResponse
 
 # Standards
 from json import dumps

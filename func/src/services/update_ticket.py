@@ -1,6 +1,6 @@
 # Jormungandr
-from func.src.domain.validator import CommentValidator
-from func.src.domain.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
+from ..domain.validator import CommentValidator
+from ..domain.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
 
 # Standards
 from base64 import b64decode
