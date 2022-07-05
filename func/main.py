@@ -6,7 +6,6 @@ from src.domain.validator import CommentValidator
 from src.services.update_ticket import UpdateTicketWithComment
 from src.services.jwt import JwtService
 
-
 # Standards
 from http import HTTPStatus
 
