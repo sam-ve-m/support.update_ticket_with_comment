@@ -10,3 +10,6 @@ class CodeResponse(IntEnum):
     JWT_INVALID = 30
     DATA_NOT_FOUND = 99
     INTERNAL_SERVER_ERROR = 100
+
+    def __repr__(self):
+        return self.value

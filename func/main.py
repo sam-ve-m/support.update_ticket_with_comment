@@ -1,10 +1,10 @@
 # Jormungandr
-from func.src.domain.enum import CodeResponse
-from func.src.domain.exceptions import InvalidJwtToken, InvalidUniqueId, TicketNotFound
-from func.src.domain.response.model import ResponseModel
-from func.src.domain.validator import CommentValidator
-from func.src.services.update_ticket import UpdateTicketWithComment
-from func.src.services.jwt import JwtService
+from src.domain.enum import CodeResponse
+from src.domain.exceptions import InvalidJwtToken, InvalidUniqueId, TicketNotFound
+from src.domain.response.model import ResponseModel
+from src.domain.validator import CommentValidator
+from src.services.update_ticket import UpdateTicketWithComment
+from src.services.jwt import JwtService
 
 
 # Standards
@@ -18,8 +18,8 @@ from flask import request
 def update_ticket_comments():
     message = "Jormungandr::update_ticket_comments"
     url_path = request.full_path
+    raw_ticket_params = request.json
     jwt = request.headers.get("x-thebes-answer")
-    raw_ticket_params = request.get_json()
     try:
         comment_params = CommentValidator(**raw_ticket_params)
         JwtService.apply_authentication_rules(jwt=jwt)
