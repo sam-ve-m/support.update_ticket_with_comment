@@ -1,5 +1,4 @@
 # Jormungandr
-from ..domain.validator import TicketComments
 from ..domain.exceptions import TicketNotFound, InvalidTicketRequester
 
 # Standards

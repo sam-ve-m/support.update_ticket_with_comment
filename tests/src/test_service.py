@@ -12,6 +12,20 @@ import pytest
 
 
 @patch.object(UpdateTicketWithComment, "_get_zenpy_client")
+def test_when_attachments_is_empty_then_return_empty_list(mock_zenpy_client, client_update_comment_service):
+    attachment_tokens = client_update_comment_service.get_attachments()
+
+    assert attachment_tokens == []
+
+
+@patch.object(UpdateTicketWithComment, "_get_zenpy_client")
+def test_get_attachments_when_zenpy_client_not_called(mock_zenpy_client, client_update_comment_service):
+    client_update_comment_service.get_attachments()
+
+    mock_zenpy_client.assert_not_called()
+
+
+@patch.object(UpdateTicketWithComment, "_get_zenpy_client")
 def test_when_get_user_with_success_then_return_ticket(mock_zenpy_client, client_update_comment_service):
     stub_user = StubGetUsers().append_user(StubUser(external_id="102030"))
     mock_zenpy_client().users.return_value = stub_user
@@ -119,20 +133,6 @@ def test_get_attachments_if_zenpy_client_upload_is_called(mock_zenpy_client, cli
     client_update_comment_service_with_attach.get_attachments()
 
     mock_zenpy_client().attachments.upload.assert_called()
-
-
-@patch.object(UpdateTicketWithComment, "_get_zenpy_client")
-def test_when_attachments_is_empty_then_return_empty_list(mock_zenpy_client, client_update_comment_service):
-    attachment_tokens = client_update_comment_service.get_attachments()
-
-    assert attachment_tokens == []
-
-
-@patch.object(UpdateTicketWithComment, "_get_zenpy_client")
-def test_get_attachments_when_zenpy_client_not_called(mock_zenpy_client, client_update_comment_service):
-    client_update_comment_service.get_attachments()
-
-    mock_zenpy_client.assert_not_called()
 
 
 @patch.object(UpdateTicketWithComment, "_requester_is_the_same_ticket_user")

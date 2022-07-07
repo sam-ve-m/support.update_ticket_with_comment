@@ -28,6 +28,6 @@ class ResponseModel:
         response = Response(
             response_model,
             mimetype=mimetype,
-            status=status.value,
+            status=status,
         )
         return response
