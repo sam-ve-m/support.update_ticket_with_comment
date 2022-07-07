@@ -1,6 +1,6 @@
 # Jormungandr
-from ..domain.validator import CommentValidator
-from ..domain.exceptions import InvalidUniqueId, TicketNotFound, InvalidTicketRequester
+from ..domain.validator import TicketComments
+from ..domain.exceptions import TicketNotFound, InvalidTicketRequester
 
 # Standards
 from base64 import b64decode
@@ -37,10 +37,9 @@ class UpdateTicketWithComment:
                 raise ex
         return cls.zenpy_client
 
-    def __init__(self, params: CommentValidator, url_path: str, decoded_jwt: dict):
-        self.decoded_jwt = decoded_jwt
-        self.url_path = url_path
-        self.params = params.dict()
+    def __init__(self, ticket_comments_validated: dict, unique_id: str):
+        self.unique_id = unique_id
+        self.params = ticket_comments_validated
 
     def get_attachments(self) -> List[Attachment]:
         attachment_tokens = list()
@@ -67,20 +66,13 @@ class UpdateTicketWithComment:
             raise TicketNotFound
 
     def get_user(self) -> User:
-        unique_id = self.decoded_jwt["user"]["unique_id"]
         zenpy_client = self._get_zenpy_client()
-        user_result = zenpy_client.users(external_id=unique_id)
+        user_result = zenpy_client.users(external_id=self.unique_id)
         if user_result:
             user_zenpy = user_result.values[0]
             return user_zenpy
-        message = (
-            f"get_user::There is no user with this unique id specified"
-            f"::{self.decoded_jwt['user']['unique_id']}"
-        )
-        Gladsheim.error(message=message)
-        raise InvalidUniqueId
 
-    def requester_is_the_same_ticket_user(self) -> bool:
+    def _requester_is_the_same_ticket_user(self) -> bool:
         user_zenpy = self.get_user()
         ticket_zenpy = self.get_ticket()
         if ticket_zenpy.requester == user_zenpy:
@@ -89,10 +81,11 @@ class UpdateTicketWithComment:
             f"requester_is_the_same_ticket_user::Requester is not the ticket owner::"
             f"Requester:{ticket_zenpy.requester}::Ticket owner user:{user_zenpy}"
         )
-        Gladsheim.error(message=message)
+        Gladsheim.info(message=message)
         raise InvalidTicketRequester
 
-    def update_comments_in_zendesk_ticket(self) -> bool:
+    def update_in_ticket(self) -> bool:
+        self._requester_is_the_same_ticket_user()
         user_zenpy = self.get_user()
         ticket_zenpy = self.get_ticket()
         attachment_tokens = self.get_attachments()
@@ -106,7 +99,3 @@ class UpdateTicketWithComment:
         zenpy_client = self._get_zenpy_client()
         zenpy_client.tickets.update(ticket_zenpy)
         return True
-
-    def __call__(self, *args, **kwargs):
-        self.requester_is_the_same_ticket_user()
-        self.update_comments_in_zendesk_ticket()

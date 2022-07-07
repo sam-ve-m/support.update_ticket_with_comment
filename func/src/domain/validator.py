@@ -18,7 +18,7 @@ class Base64Attachments(BaseModel):
         raise ValueError("Base64 file content are invalid")
 
 
-class CommentValidator(BaseModel):
+class TicketComments(BaseModel):
     body: str
     attachments: List[Base64Attachments] = []
     id: int
