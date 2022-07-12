@@ -1,3 +1,10 @@
+from func.src.domain.validator import TicketComments
+
+stub_unique_id = "102030"
+params_test = {"id": 255, "body": "corpo do comentário", "attachments": []}
+stub_ticket_comments_validated = TicketComments(**params_test).dict()
+
+
 class StubUser:
     def __init__(self, id=None, external_id=None):
         self.id = id or None

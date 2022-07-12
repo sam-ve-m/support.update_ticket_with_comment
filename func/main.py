@@ -1,8 +1,8 @@
 # Jormungandr
 from src.domain.enum import CodeResponse
-from src.domain.exceptions import InvalidJwtToken, InvalidUniqueId, TicketNotFound
+from src.domain.exceptions import InvalidJwtToken, TicketNotFound, InvalidTicketRequester
 from src.domain.response.model import ResponseModel
-from src.domain.validator import CommentValidator
+from src.domain.validator import TicketComments
 from src.services.update_ticket import UpdateTicketWithComment
 from src.services.jwt import JwtService
 
@@ -16,40 +16,25 @@ from flask import request
 
 def update_ticket_comments():
     message = "Jormungandr::update_ticket_comments"
-    url_path = request.full_path
-    raw_ticket_params = request.json
+    raw_ticket_comments = request.json
     jwt = request.headers.get("x-thebes-answer")
     try:
-        comment_params = CommentValidator(**raw_ticket_params)
+        ticket_comments_validated = TicketComments(**raw_ticket_comments).dict()
         JwtService.apply_authentication_rules(jwt=jwt)
-        decoded_jwt = JwtService.decode_jwt(jwt=jwt)
-        update_comments_service = UpdateTicketWithComment(
-            params=comment_params,
-            url_path=url_path,
-            decoded_jwt=decoded_jwt,
+        unique_id = JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
+        comments_service = UpdateTicketWithComment(
+            ticket_comments_validated=ticket_comments_validated,
+            unique_id=unique_id,
         )
-        success = update_comments_service()
+        comments_service.update_in_ticket()
         response_model = ResponseModel.build_response(
-            success=success,
+            success=True,
             code=CodeResponse.SUCCESS,
-            message="The information was successfully updated",
+            message="The ticket was successfully updated",
         )
         response = ResponseModel.build_http_response(
             response_model=response_model,
             status=HTTPStatus.OK
-        )
-        return response
-
-    except InvalidUniqueId as ex:
-        Gladsheim.error(error=ex, message=f"{message}::'The JWT unique id is not the same user unique id'")
-        response_model = ResponseModel.build_response(
-            message=ex.msg,
-            success=False,
-            code=CodeResponse.JWT_INVALID,
-        )
-        response = ResponseModel.build_http_response(
-            response_model=response_model,
-            status=HTTPStatus.UNAUTHORIZED
         )
         return response
 
@@ -62,7 +47,20 @@ def update_ticket_comments():
         )
         response = ResponseModel.build_http_response(
             response_model=response_model,
-            status=HTTPStatus.NOT_FOUND
+            status=HTTPStatus.OK
+        )
+        return response
+
+    except InvalidTicketRequester as ex:
+        Gladsheim.error(error=ex, message=f"{message}::No ticket was found with the specified id")
+        response_model = ResponseModel.build_response(
+            message=ex.msg,
+            success=False,
+            code=CodeResponse.INVALID_OWNER,
+        )
+        response = ResponseModel.build_http_response(
+            response_model=response_model,
+            status=HTTPStatus.UNAUTHORIZED
         )
         return response
 

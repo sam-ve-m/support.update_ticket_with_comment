@@ -2,12 +2,8 @@ class InvalidJwtToken(Exception):
     msg = 'Failed to validate user credentials'
 
 
-class InvalidUniqueId(Exception):
-    msg = 'Failed to validate user credentials'
-
-
 class InvalidTicketRequester(Exception):
-    msg = 'No tickets found'
+    msg = 'Invalid ticket owner'
 
 
 class TicketNotFound(Exception):

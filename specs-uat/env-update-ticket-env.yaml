@@ -11,7 +11,7 @@ spec:
       name: ""
       resources: {}
     image: nexus.sigame.com.br/fission-builder-3.8:0.0.1
-  imagepullsecret: "nexus-v3"
+  imagepullsecret: ""
   keeparchive: false
   poolsize: 3
   resources: {}
@@ -22,20 +22,20 @@ spec:
     image: nexus.sigame.com.br/python-env-3.8:0.0.5
     podspec:
       containers:
-        - name: update-ticket-env
+        - name: get-user-tickets-env
           env:
             - name: ROOT_LOG_LEVEL
               value: "INFO"
             - name: ETRIA_LOG_LEVEL
               value: "INFO"
             - name: ZENDESK_EMAIL
-              value: "tech@lionx.com.br"
+              value: "Tech@lionx.com.br"
             - name: ZENDESK_PASSWORD
               value: "bezfiz-dyhqu3-noqmEg"
             - name: ZENDESK_SUBDOMAIN
               value: "sigame"
             - name: HEIMDALL_BUCKET_NAME_KEY
-              value: "auth-gateway-keys-dev"
+              value: "auth-gateway-keys-uat"
             - name: HEIMDALL_AWS_ACCESS_KEY_ID
               value: "AKIATZVFXI25USQWCS5O"
             - name: HEIMDALL_AWS_SECRET_ACCESS_KEY
@@ -47,13 +47,13 @@ spec:
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
             - name: HEIMDALL_REDIS_HOST
-              value: "172.30.11.235"
+              value: "172.30.19.183"
             - name: HEIMDALL_REDIS_PORT
               value: "6379"
             - name: HEIMDALL_REDIS_DB
               value: "0"
             - name: HEIMDALL_REDIS_USER
-              value: "bnd"
+              value: "heimdal"
             - name: HEIMDALL_REDIS_PASSWORD
-              value: "jkl321pqr"
+              value: "FBJAnjkqw21yjewkDSA"
   version: 2
