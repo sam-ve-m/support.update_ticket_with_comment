@@ -22,7 +22,7 @@ spec:
     image: nexus.sigame.com.br/python-env-3.8:0.0.5
     podspec:
       containers:
-        - name: get-user-tickets-env
+        - name: update-ticket-env
           env:
             - name: ROOT_LOG_LEVEL
               value: "INFO"
