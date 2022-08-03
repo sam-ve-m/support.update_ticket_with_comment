@@ -14,10 +14,10 @@ spec:
   ingressconfig:
     annotations: null
     host: '*'
-    path: /update-ticket
+    path: /support/update-ticket
     tls: ""
   method: ""
   methods:
   - PUT
   prefix: ""
-  relativeurl: /update-ticket
+  relativeurl: /support/update-ticket
