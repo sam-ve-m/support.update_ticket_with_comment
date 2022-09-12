@@ -13,7 +13,6 @@ spec:
     image: nexus.sigame.com.br/fission-builder-3.8:0.0.1
   imagepullsecret: "nexus-v3"
   keeparchive: false
-  poolsize: 3
   resources: {}
   runtime:
     container:
@@ -48,4 +47,4 @@ spec:
               value: "[]"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
-  version: 2
+  version: 3
