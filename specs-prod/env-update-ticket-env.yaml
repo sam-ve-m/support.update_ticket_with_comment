@@ -46,5 +46,5 @@ spec:
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
             - name: HEIMDALL_REDIS_URL
-              value: "redis://heimdal:FAhjlkyrliu6789032hgBfda@172.20.26.230:6379?db=1"
+              value: "redis://heimdal:FAhjlkyrliu6789032hgBfda@172.20.26.230:6380?db=1"
   version: 3
