@@ -28,9 +28,9 @@ spec:
             - name: ETRIA_LOG_LEVEL
               value: "INFO"
             - name: ZENDESK_EMAIL
-              value: "Tech@lionx.com.br"
+              value: "zendesk@ligainvest.com.br"
             - name: ZENDESK_PASSWORD
-              value: "bezfiz-dyhqu3-noqmEg"
+              value: "5FaDQ&7C4GOPc*vm!Pwyp"
             - name: ZENDESK_SUBDOMAIN
               value: "ligainvest"
             - name: HEIMDALL_BUCKET_NAME_KEY
@@ -46,5 +46,5 @@ spec:
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
             - name: HEIMDALL_REDIS_URL
-              value: "redis://heimdal:FAhjlkyrliu6789032hgBfda@172.20.26.230:6379?db=1"
+              value: "redis://heimdal:FAhjlkyrliu6789032hgBfda@172.20.26.230:6380?db=1"
   version: 3
