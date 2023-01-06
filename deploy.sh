@@ -1,5 +1,4 @@
-#!/bin/bash
 fission spec init
-fission env create --spec --name update-ticket-env --image nexus.sigame.com.br/python-env-3.8:0.0.5 --builder nexus.sigame.com.br/fission-builder-3.8:0.0.1
-fission fn create --spec --name update-ticket-fn --env update-ticket-env --src "./func/*" --entrypoint main.update_ticket_comments --executortype newdeploy --maxscale 1
-fission route create --spec --name update-ticket-rt --method PUT --url /support/update-ticket --function update-ticket-fn
+fission env create --spec --name sup-tckt-comment-env --image nexus.sigame.com.br/fission-support-ticket-add-comment:0.1.0-0 --poolsize 0 --version 3 --imagepullsecret "nexus-v3" --spec
+fission fn create --spec --name sup-tckt-comment-fn --env sup-tckt-comment-env --code fission.py --targetcpu 80 --executortype newdeploy --maxscale 3 --requestsperpod 10000 --spec
+fission route create --spec --name sup-tckt-comment-rt --method PUT --url /support/update-ticket --function sup-tckt-comment-fn

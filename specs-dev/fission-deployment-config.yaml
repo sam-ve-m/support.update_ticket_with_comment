@@ -4,4 +4,4 @@
 apiVersion: fission.io/v1
 kind: DeploymentConfig
 name: support-update-ticket-with-comment
-uid: 65eb262e-642d-44fd-a251-5a493f43922c
+uid: b89e7c38-7ac8-4ef6-8037-cf5150c2195c

@@ -1,10 +1,10 @@
 # Jormungandr
-from src.domain.enum import CodeResponse
-from src.domain.exceptions import InvalidJwtToken, TicketNotFound, InvalidTicketRequester
-from src.domain.response.model import ResponseModel
-from src.domain.validator import TicketComments
-from src.services.update_ticket import UpdateTicketWithComment
-from src.services.jwt import JwtService
+from func.src.domain.enum import CodeResponse
+from func.src.domain.exceptions import InvalidJwtToken, TicketNotFound, InvalidTicketRequester
+from func.src.domain.response.model import ResponseModel
+from func.src.domain.validator import TicketComments
+from func.src.services.update_ticket import UpdateTicketWithComment
+from func.src.services.jwt import JwtService
 
 # Standards
 from http import HTTPStatus
@@ -14,14 +14,14 @@ from etria_logger import Gladsheim
 from flask import request
 
 
-def update_ticket_comments():
+async def update_ticket_comments():
     message = "Jormungandr::update_ticket_comments"
     raw_ticket_comments = request.json
     jwt = request.headers.get("x-thebes-answer")
     try:
         ticket_comments_validated = TicketComments(**raw_ticket_comments).dict()
-        JwtService.apply_authentication_rules(jwt=jwt)
-        unique_id = JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
+        await JwtService.apply_authentication_rules(jwt=jwt)
+        unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         comments_service = UpdateTicketWithComment(
             ticket_comments_validated=ticket_comments_validated,
             unique_id=unique_id,
