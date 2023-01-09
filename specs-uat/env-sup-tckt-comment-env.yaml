@@ -2,26 +2,24 @@ apiVersion: fission.io/v1
 kind: Environment
 metadata:
   creationTimestamp: null
-  name: update-ticket-env
+  name: sup-tckt-comment-env
   namespace: default
 spec:
   builder:
-    command: build
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-builder-3.8:0.0.1
-  imagepullsecret: "nexus-v3"
+  imagepullsecret: nexus-v3
   keeparchive: false
   resources: {}
   runtime:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/python-env-3.8:0.0.5
+    image: nexus.sigame.com.br/fission-support-ticket-add-comment:0.1.0-0
     podspec:
       containers:
-        - name: update-ticket-env
+        - name: sup-tckt-comment-env
           env:
             - name: ROOT_LOG_LEVEL
               value: "INFO"
