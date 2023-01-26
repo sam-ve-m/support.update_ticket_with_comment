@@ -34,18 +34,8 @@ metadata:
 spec:
   InvokeStrategy:
     ExecutionStrategy:
-      ExecutorType: newdeploy
-      MaxScale: 3
-      MinScale: 1
+      ExecutorType: poolmgr
       SpecializationTimeout: 120
-      TargetCPUPercent: 0
-      hpaMetrics:
-      - resource:
-          name: cpu
-          target:
-            averageUtilization: 80
-            type: Utilization
-        type: Resource
     StrategyType: execution
   concurrency: 500
   environment:
@@ -58,4 +48,10 @@ spec:
       name: sup-tckt-comment-fn-48039350-e3da-4e08-80c8-343f66779ebc
       namespace: default
   requestsPerPod: 10000
-  resources: {}
+  resources:
+    requests:
+      cpu: 128m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 256Mi
